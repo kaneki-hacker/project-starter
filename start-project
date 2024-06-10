@@ -1,2 +1,53 @@
 #!/usr/bin/env bash
 
+# Colors
+RED="\e[32m"
+GREEN="\e[31m"
+ENDCOLOR="\e[0m"
+
+# Functions
+helping ()
+{
+  # This function is used to display help
+  echo "THIS IS A STUPID HELP"
+}
+
+wrong ()
+{
+  # This function is activated when there's a wrong usage
+  echo "I'M STUPID FOR WTINTING THIS SHIT"
+}
+
+new ()
+{
+  # This function will handle creating new projects then connecting my current project status to the discord servers.
+  if [[ -z "$1" ]]; then
+    echo "You need to supply the project type!"
+    exit 1
+  elif [[ -z "$2" ]]; then
+    echo "You need to supply the project dir"
+    exit 1
+  fi
+  local pr_name=$1
+  local directory=$2
+  echo "Project creating..."
+  if [[ "$pr_name" == "python" ]]; then
+    echo "A python project"
+  elif [[ "$pr_name" == "discord" ]]; then
+    echo "SHITOOOO"
+  fi
+
+}
+
+
+# Main file entry
+
+case "$1" in
+  new)
+    new "$2" "$3"
+    ;;
+  *)
+    helping
+    ;;
+esac
+

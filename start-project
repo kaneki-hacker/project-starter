@@ -1,35 +1,46 @@
 #!/usr/bin/env bash
 
 # Colors
-RED="\e[32m"
-GREEN="\e[31m"
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+BLUE="\e[34m"
+MAGENTA="\e[35m"
 ENDCOLOR="\e[0m"
 
 # Functions
 helping ()
 {
   # This function is used to display help
-  echo "THIS IS A STUPID HELP"
+  echo -e "${MAGENTA}The following is the right usage to the script:${ENDCOLOR}"
+  echo -e "   ${GREEN}To create a new project: $0 new <PROJECT TYPE> <PROJECT DIRECTORY NAME>${ENDCOLOR}"
+  echo -e "   ${GREEN}To get help: $0 ? or $0 help${ENDCOLOR}"
+  echo -e "   ${GREEN}To backup a project: $0 backup${ENDCOLOR}"
+  exit 0
 }
 
 wrong ()
 {
   # This function is activated when there's a wrong usage
-  echo "I'M STUPID FOR WTINTING THIS SHIT"
+  echo -e "${RED}Wrong usage!!${ENDCOLOR}"
+  echo -e "${GREEN}Check out: '$0 help', to get the full usage of the script!${ENDCOLOR}"
+  exit 1
 }
 
 new ()
 {
   # This function will handle creating new projects then connecting my current project status to the discord servers.
   if [[ -z "$1" ]]; then
-    echo "You need to supply the project type!"
+    echo -e "${RED}You have to suply the project type!!${ENDCOLOR}"
+    echo -e "${GREEN}The correct syntax: $0 new <PROJECT TYPE> <PROJECT NAME>!${ENDCOLOR}"
+    echo -e "${RED}Check out: '$0 help' for the complete usage!${ENDCOLOR}"
     exit 1
   elif [[ -z "$2" ]]; then
     echo "You need to supply the project dir"
     exit 1
   fi
   local pr_name=$1
-  local directory=$2
+  local directory_name=$2
   echo "Project creating..."
   if [[ "$pr_name" == "python" ]]; then
     echo "A python project"
@@ -46,8 +57,14 @@ case "$1" in
   new)
     new "$2" "$3"
     ;;
-  *)
+  backup)
+    echo "Not here yet!" # TODO: make a script for backup!!
+    ;;
+  ? | help)
     helping
+    ;;
+  *)
+    wrong
     ;;
 esac
 

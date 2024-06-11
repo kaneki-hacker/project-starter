@@ -1,17 +1,31 @@
 #!/usr/bin/env python3.11
 
+# Importing libraries
 import pypresence
-import os
+import os 
 import time
+import psutil
+import typing
 
+# Declaring variables
 client = os.getenv("DISCORD_APP_CLIENT")
-RPC = pypresence.Presence(client)
 
-RPC.connect()
+# Creating functions
+def is_discord_running() -> bool:
+    return false
 
-starting_time=time.time()
-RPC.update(state="WORKING...", party_size=[1,1], large_text="Coding!", details="Creating awesome projects!",
-           start=int(starting_time))
-print("ALR CONNECTED SUCCESSFULLY!")
-while True:
-    time.sleep(15)
+def run_discord():
+    os.system("")
+
+# Main function
+def main():
+    is_D_running = is_discord_running()
+    if !is_D_running:
+        run_discord()
+
+
+# Main file entry
+if __name__ == "__main__":
+    main()
+
+

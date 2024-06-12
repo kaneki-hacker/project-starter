@@ -8,6 +8,9 @@ BLUE="\e[34m"
 MAGENTA="\e[35m"
 ENDCOLOR="\e[0m"
 
+# Variables
+VERSION="alphaV1.0"
+
 # Functions
 helping ()
 {
@@ -32,18 +35,30 @@ new ()
   # This function will handle creating new projects then connecting my current project status to the discord servers.
   if [[ -z "$1" ]]; then
     echo -e "${RED}You have to suply the project type!!${ENDCOLOR}"
-    echo -e "${GREEN}The correct syntax: $0 new <PROJECT TYPE> <PROJECT NAME>!${ENDCOLOR}"
+    echo -e "${GREEN}The correct syntax: $0 new <PROJECT TYPE> <PROJECT NAME>${ENDCOLOR}"
     echo -e "${RED}Check out: '$0 help' for the complete usage!${ENDCOLOR}"
     exit 1
   elif [[ -z "$2" ]]; then
-    echo "You need to supply the project dir"
+    echo -e "${RED}Wrong usage: You have to supply the project name to create a directory for!${ENDCOLOR}"
+    echo -e "${GREEN}The correct syntax: $0 new <PROJECT TYPE> <PROJECT NAME>${ENDCOLOR}"
+    echo -e "${YELLOW}Check out: '$0 help' or '$0 ?' for the complete usage!${ENDCOLOR}"
     exit 1
   fi
   local pr_name=$1
   local directory_name=$2
-  echo "Project creating..."
+  echo -e "${BLUE}Project is creating...${ENDCOLOR}"
   if [[ "$pr_name" == "python" ]]; then
-    echo "A python project"
+    echo -e "${MAGENTA}The project type choosed is python!!${ENDCOLOR}"
+    echo -e "${RED}Are you sure you want to create this project?(y/n)${ENDCOLOR}"
+    read choice
+    if [[ "$choice" == "y" ]]; then
+      echo "mhm"
+    elif [[ "$choice" == "n" ]]; then
+      echo "nope"
+    else
+      echo "ronggg"
+      exit 1
+    fi
   elif [[ "$pr_name" == "discord" ]]; then
     echo "SHITOOOO"
   fi
@@ -59,6 +74,9 @@ case "$1" in
     ;;
   backup)
     echo "Not here yet!" # TODO: make a script for backup!!
+    ;;
+  version)
+    echo "Not here yet!" # TODO: Make a function for version!!
     ;;
   ? | help)
     helping

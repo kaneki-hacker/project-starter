@@ -78,18 +78,23 @@ check_dependecies ()
   fi
 }
 
-check_modules ()
-{
-  # This function is used to check if the modules used by the python script are imported in the system
-  echo -e "${RED}Still under-dev${ENDCOLOR}"
-  exit 0
-}
-
 check_files ()
 {
   # This function will check for the files that this script needs!
-  echo -e "Still under-dev"
-  exit 0
+  echo -e "${RED}Checking for files!${ENDCOLOR}"
+  if [[ ! -d "$files_directory" ]]; then
+    echo -e "${RED}The directory for the project files in not available!${ENDCOLOR}"
+    exit 1
+  else
+    echo -e "${GREEN}The project directory exists!${ENDCOLOR}"
+  fi
+  if [[ -f "$presence_file" ]]; then
+    echo -e "There's presence"
+  else
+    echo -e "${RED}Some files are needed!${ENDCOLOR}"
+    echo -e "${RED}Install all the script dependencies using: '$0 install all' or check: '$0 help' for the full usage"
+    exit 1
+  fi
 }
 
 github_cloning ()
@@ -192,11 +197,48 @@ backup ()
    fi
 }
 
+# Installating modes
+install_all ()
+{
+  # This function will be used to install all the possible dependencies
+  echo -e "${GREEN}Choosen the install all mode!${ENDCOLOR}"
+  echo -e "${GREEN}Process started...${ENDCOLOR}"
+  if [[ ! -d $install_dir ]]; then
+    mkdir -p $install_dir
+  fi
+  cd $install_dir
+  github_cloning $discord_link || echo "AN error occured while cloning!" && exit 1
+}
+
+intall_python ()
+{
+  # This function will only install python dependencies 
+  echo -e "Python will be installed shortly"
+}
+
+install_discord_bot_dev ()
+{
+  # This function will install the packages necessary for discord bot development
+  echo -e "This function will be used shortly"
+}
 
 installating ()
 {
   # This script will install all the necessary dependencies or the whole project
   echo -e "${MAGENTA}Starting the installating mode!${ENDCOLOR}"
+  echo -e "${RED}Notice: this function needs to be run with root privilages!${ENDCOLOR}"
+  if [[ "$EUID" -ne 0 ]]; then
+    echo -e "${RED}Not run with root! Exiting!${ENDCOLOR}"
+    exit 1
+  if [[ -z "$1" ]]; then
+    echo -e "${RED}No mode have been specified!${ENDCOLOR}"
+    echo -e "${RED}Using default all!${ENDCOLOR}"
+    install_all
+  else
+    echo -e "A mode have been choosen"
+    local mode="$1"
+    exit 0
+  fi
 }
 
 

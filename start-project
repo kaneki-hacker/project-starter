@@ -35,8 +35,16 @@ wrong ()
 version ()
 {
   # This function will return the version of the script and 
-  echo "Underwork!!!"
+  echo -e "${GREEN}The script's version: ${VERSION}.${ENDCOLOR}"
+  echo -e "${YELLOW}To see the full usage use: $0 help or $0 ?${ENDCOLOR}"
   exit 0
+}
+
+check_dependecies ()
+{
+  # This function will check for the script dependencies then see if it could fix them
+  echo "Still need work"
+  exit 1
 }
 
 new ()
@@ -84,7 +92,7 @@ new ()
     read choice
     if [[ "$choice" == "y" ]]; then
       echo "chosed y"
-    elif [[ "$choice" == "n"]]; then
+    elif [[ "$choice" == "n" ]]; then
       echo "chosed n"
     else
       echo "nope"
@@ -108,8 +116,8 @@ case "$1" in
   backup)
     echo "Not here yet!" # TODO: make a script for backup!!
     ;;
-  version)
-    echo "Not here yet!" # TODO: Make a function for version!!
+  version | v)
+    version
     ;;
   ? | help)
     helping

@@ -5,8 +5,9 @@ import pypresence
 import os 
 import time
 import psutil
-import typing
-import sys
+import threading
+
+# TODO: Maybe add some more functionality
 
 # Declaring variables
 client = os.getenv("DISCORD_APP_CLIENT")
@@ -20,7 +21,7 @@ def is_discord_running() -> bool:
                 return True
         except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
             pass
-    print("dis is not running")
+    print("discord is not running")
     return False
 
 def run_discord():
@@ -37,8 +38,12 @@ def presence_connect():
 def main():
     is_D_running = is_discord_running()
     if is_D_running == False:
-        run_discord()
-    presence_connect()
+        discord_thread = threading.Thread(target=run_discord)
+        discord_thread.start()
+        discord_thread.join()
+    time.sleep(15)
+    presence_thread = threading.Thread(target=presence_connect)
+    presence_thread.start()
     while True:
         time.sleep(30)
 

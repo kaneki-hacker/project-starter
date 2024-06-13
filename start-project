@@ -13,11 +13,12 @@ ENDCOLOR="\e[0m"
 # Variables
 VERSION="alphaV1.0"
 discord_link="https://github.com/kaneki-hacker/discord-python-blueprint.git"
+backup_dir="backup"
 #
 # Project files folder
 #
-files_directory="/usr/local/share/$@"
-files_repository=""
+files_directory="/usr/local/share/$0"
+files_git_repository=""
 
 
 # Functions
@@ -52,6 +53,19 @@ check_dependecies ()
   # This function will check for the script dependencies then see if it could fix them
   echo "Still need work"
   exit 1
+}
+
+github_cloning ()
+{
+  # This function will be used to controle cloning files from github
+  if [[ -z "$1" ]]; then
+    echo -e "${RED}The script didn't supply the github repositorie! Exiting!${ENDCOLOR}"
+    exit 1
+  fi
+  local repo="$1"
+  echo -e "${GREEN}Currently cloning a repositorie...${ENDCOLOR}"
+  echo -e "${YELLOW}Don't quit the script!!${ENDCOLOR}"
+  git clone $repo && echo -e "Cloned successfully!" || echo -e "${RED}NOt cloned" && exit 1
 }
 
 new ()
@@ -115,11 +129,27 @@ new ()
 
 }
 
+backup ()
+{
+   # This function will be used to back up the current project directory
+   echo -e "${GREEN}Backuping the current project...${ENDCOLOR}"
+   echo -e "${RED}Do you really wanna backup the current project?(y/n)${ENDCOLOR}"
+   read choice
+   if [[ "$choice" == "y" ]]; then
+     echo -e "${GREEN}Resumed...${ENDCOLOR}"
+     if [[ ! -d "$backup_dir" ]]; then
+       mkdir $backup_dir
+     fi
+     tar --exclude-backups -czvf ./$backup_dir/project_backup_$(date +%F).tar.gz ./* 2>/tmp/logs.txt 
+     echo -e "${GREEN}Finished backuping the project!${ENDCOLOR}"
+     exit 0
+   fi
+}
+
 # TODO: Make an install script function!!
 
 # TODO: make a function to automate github clonning!
 
-# TODO: Create a backup function
 # TODO: Create a function to clone all the necessary repositories from github
 # TODO: Create a function that checks for the "/usr/local/share/" if my app files are there, if not clone them and then store them localy
 # TODO: Add more functionality to my script
@@ -135,7 +165,7 @@ case "$1" in
     new "$2" "$3"
     ;;
   backup)
-    echo "Not here yet!" # TODO: make a script for backup!!
+    backup
     ;;
   version | v)
     version

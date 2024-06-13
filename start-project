@@ -14,6 +14,8 @@ ENDCOLOR="\e[0m"
 VERSION="alphaV1.0"
 discord_link="https://github.com/kaneki-hacker/discord-python-blueprint.git"
 backup_dir="backup"
+presence_file="presence.py"
+install_dir="/tmp/$0"
 #
 # Project files folder
 #
@@ -48,11 +50,46 @@ version ()
   exit 0
 }
 
+command_exists ()
+{
+  command -v "$1" >/dev/null 2&1
+}
+
+
 check_dependecies ()
 {
-  # This function will check for the script dependencies then see if it could fix them
-  echo "Still need work"
-  exit 1
+  # This function will check for the script main dependencies then see if it could fix them
+  echo -e "${MAGENTA}Cheking dependencies...${ENDCOLOR}"
+  if command_exists python3.11; then
+    echo -e "${GREEN}Python3 is available in the system!${ENDCOLOR}"
+  else
+    echo -e "${RED}Python3 needs to be installed!${ENDCOLOR}"
+    exit 1
+  fi
+  if python3.11 -m pip --version >/dev/null 2>&1; then
+    echo -e "${GREEN}Pip is available on the system!${ENDCOLOR}"
+  else
+    echo -e "${RED}Pip is not present in the system!${ENDCOLOR}"
+  fi
+  if python3.11 -m venv --help >/dev/null 2>&1; then
+    echo -e "${GREEN}Venv is available in the system!${ENDCOLOR}"
+  else
+    echo -e "${RED}Venv is not present in the system!${ENDCOLOR}"
+  fi
+}
+
+check_modules ()
+{
+  # This function is used to check if the modules used by the python script are imported in the system
+  echo -e "${RED}Still under-dev${ENDCOLOR}"
+  exit 0
+}
+
+check_files ()
+{
+  # This function will check for the files that this script needs!
+  echo -e "Still under-dev"
+  exit 0
 }
 
 github_cloning ()
@@ -66,6 +103,15 @@ github_cloning ()
   echo -e "${GREEN}Currently cloning a repositorie...${ENDCOLOR}"
   echo -e "${YELLOW}Don't quit the script!!${ENDCOLOR}"
   git clone $repo && echo -e "Cloned successfully!" || echo -e "${RED}NOt cloned" && exit 1
+}
+
+discord_connection ()
+{
+  # This function will be used to connect the project to the discord servers!
+  echo -e "${GREEN}Connecting the project to the discord presence!${ENDCOLOR}"
+  eval "python3.11 $presence_file" || echo -e "Couldn't connect!"
+  sleep 1
+  echo -e "${RED}Finished${ENDCOLOR}"
 }
 
 new ()
@@ -115,12 +161,12 @@ new ()
       echo -e "${GREEN}Project creating resumed...${ENDCOLOR}"
       mkdir $directory_name
       cd $directory_name
-      git clone $discord_link
+      github_cloning "$discord_link"
       echo -e "${GREEN}Project creating is complete!${ENDCOLOR}"
       exit 0
     elif [[ "$choice" == "n" ]]; then
       echo -e "${RED}Aborting project creating!${ENDCOLOR}"
-      exit °0
+      exit 0
     else
       echo -e "${RED}You choosed a wrong option! Exiting!${ENDCOLOR}"
       exit 1
@@ -146,20 +192,26 @@ backup ()
    fi
 }
 
-# TODO: Make an install script function!!
+
+installating ()
+{
+  # This script will install all the necessary dependencies or the whole project
+  echo -e "${MAGENTA}Starting the installating mode!${ENDCOLOR}"
+}
+
 
 # TODO: make a function to automate github clonning!
 
 # TODO: Create a function to clone all the necessary repositories from github
 # TODO: Create a function that checks for the "/usr/local/share/" if my app files are there, if not clone them and then store them localy
 # TODO: Add more functionality to my script
-
+#
 
 # Main file entry
 
 case "$1" in
   install | i)
-    echo -e "${MAGENTA}NOT HERE YET AGAIN, But still under work!"
+    installating "$2"
     ;;
   new)
     new "$2" "$3"

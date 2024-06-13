@@ -16,11 +16,12 @@ discord_link="https://github.com/kaneki-hacker/discord-python-blueprint.git"
 backup_dir="backup"
 presence_file="presence.py"
 install_dir="/tmp/$0"
+discord_dir="discord-python-blueprint"
 #
 # Project files folder
 #
 files_directory="/usr/local/share/$0"
-files_git_repository=""
+files_git_repository="https://github.com/kaneki-hacker/project-starter.git"
 
 
 # Functions
@@ -28,6 +29,7 @@ helping ()
 {
   # This function is used to display help
   echo -e "${MAGENTA}The following is the right usage to the script:${ENDCOLOR}"
+  echo -e "   ${GREEN}TO download the script files: $0 install <Installating mode>${ENDCOLOR}"
   echo -e "   ${GREEN}To create a new project: $0 new <PROJECT TYPE> <PROJECT DIRECTORY NAME>${ENDCOLOR}"
   echo -e "   ${GREEN}To get help: $0 ? or $0 help${ENDCOLOR}"
   echo -e "   ${GREEN}To backup a project: $0 backup${ENDCOLOR}"
@@ -70,11 +72,13 @@ check_dependecies ()
     echo -e "${GREEN}Pip is available on the system!${ENDCOLOR}"
   else
     echo -e "${RED}Pip is not present in the system!${ENDCOLOR}"
+    exit 1
   fi
   if python3.11 -m venv --help >/dev/null 2>&1; then
     echo -e "${GREEN}Venv is available in the system!${ENDCOLOR}"
   else
     echo -e "${RED}Venv is not present in the system!${ENDCOLOR}"
+    exit 1
   fi
 }
 
@@ -107,7 +111,7 @@ github_cloning ()
   local repo="$1"
   echo -e "${GREEN}Currently cloning a repositorie...${ENDCOLOR}"
   echo -e "${YELLOW}Don't quit the script!!${ENDCOLOR}"
-  git clone $repo && echo -e "Cloned successfully!" || echo -e "${RED}NOt cloned" && exit 1
+  git clone $repo > /tmp/logss && echo -e "Cloned successfully!" || echo -e "${RED}NOt cloned" 
 }
 
 discord_connection ()
@@ -140,6 +144,9 @@ new ()
   if [[ "$pr_name" == "python" ]]; then
     # TODO: add the cheking mekanisme for all the dependencies of the project before starting
     echo -e "${MAGENTA}The project type choosed is python!!${ENDCOLOR}"
+    echo -e "${RED}Checking python dependencies...${ENDCOLOR}"
+    check_dependecies
+    echo -e "${GREEN}Finished checking everything is good!${ENDCOLOR}"
     echo -e "${RED}Are you sure you want to create this project?(y/n)${ENDCOLOR}"
     read choice
     if [[ "$choice" == "y" ]]; then
@@ -203,23 +210,62 @@ install_all ()
   # This function will be used to install all the possible dependencies
   echo -e "${GREEN}Choosen the install all mode!${ENDCOLOR}"
   echo -e "${GREEN}Process started...${ENDCOLOR}"
-  if [[ ! -d $install_dir ]]; then
-    mkdir -p $install_dir
-  fi
-  cd $install_dir
-  github_cloning $discord_link || echo "AN error occured while cloning!" && exit 1
+  install_python
+  install_discord_bot_dev
 }
-
 intall_python ()
 {
   # This function will only install python dependencies 
   echo -e "Python will be installed shortly"
+  if command_exists python3.11; then
+    echo -e "${GREEN}Python already exists!${ENDCOLOR}"
+    exit 0
+  fi
+  apt update && apt install -y python3.11 python3.11-pip python3.11-venv \
+    && sleep 1 \
+    && echo -e "${GREEN}Finished Downloading python3 and it's packages${ENDCOLOR}" \
+    || echo -e "${RED}An error has occured while downloading python!${ENDCOLOR}"
+  exit 0
 }
 
 install_discord_bot_dev ()
 {
   # This function will install the packages necessary for discord bot development
-  echo -e "This function will be used shortly"
+  echo -e "${GREEN}The discord development files will be installed shortly"
+  if [[ ! -d $files_directory ]]; then
+    mkdir $files_directory \
+      && chown $USER:$USER $files_directory
+  fi
+  if [[ ! -d $files_directory/$discord_dir ]]; then
+    if [[ ! -d $install_dir ]]; then
+      mkdir $install_dir
+    elif [[ -d $install_dir ]]; then
+      if [[ -d $install_dir/$discord_dir ]]; then
+        mv $install_dir/$discord_dir $files_directory/$discord_dir/ \
+          && cd $files_directory/$discord_dir \
+          && eval "pîp3.11 install -r requirements.txt" \
+          && echo -e "${GREEN}Installed successfully!${ENDCOLOR}" \        
+          || echo -e "${RED}An error occured while creating the discord dependecies!${ENDCOLOR}"
+        rm -r $install_dir
+        exit 0
+      fi
+    fi
+    cd $install_dir \
+      && github_cloning $discord_link 1>/dev/null \
+      && mv $install_dir/$discord_dir $files_directory/$discord_dir/ \
+      && cd $files_directory/ \
+      && chown $USER:$USER $discord_dir \
+      && cd $discord_dir \
+      && eval "pip3.11 install -r requirements.txt" \
+      && echo -e "${GREEN}Installed everything successfully!${ENDCOLOR}" \
+      || echo -e "${RED}An error has occured while installing the dependencies!${ENDCOLOR}"
+  else
+    cd $files_directory/$discord_dir \
+      && eval "pip3.11 install -r requirements.txt" \
+      && echo -e "${GREEN}INstalled everythin successfully!${ENDCOLOR}" \
+      || echo -e "${RED}An error has occured while downloading the dependencies!${ENDCOLOR}"
+  fi
+  exit 0
 }
 
 installating ()
@@ -230,19 +276,23 @@ installating ()
   if [[ "$EUID" -ne 0 ]]; then
     echo -e "${RED}Not run with root! Exiting!${ENDCOLOR}"
     exit 1
-  if [[ -z "$1" ]]; then
+  fi
+  if [[ -z "$1" || "$1" == "all" ]]; then
     echo -e "${RED}No mode have been specified!${ENDCOLOR}"
     echo -e "${RED}Using default all!${ENDCOLOR}"
     install_all
   else
     echo -e "A mode have been choosen"
     local mode="$1"
-    exit 0
+    if [[ "$mode" == "python" ]]; then
+      echo -e "${MAGENTA}Choosed python download!${ENDCOLOR}"
+      echo -e "${MAGENTA}Starting...${ENDCOLOR}"
+      install_python
+    fi
   fi
 }
 
 
-# TODO: make a function to automate github clonning!
 
 # TODO: Create a function to clone all the necessary repositories from github
 # TODO: Create a function that checks for the "/usr/local/share/" if my app files are there, if not clone them and then store them localy

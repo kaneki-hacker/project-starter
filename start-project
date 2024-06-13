@@ -42,6 +42,7 @@ version ()
 new ()
 {
   # This function will handle creating new projects then connecting my current project status to the discord servers.
+  # TODO: Make some error checking
   if [[ -z "$1" ]]; then
     echo -e "${RED}You have to suply the project type!!${ENDCOLOR}"
     echo -e "${GREEN}The correct syntax: $0 new <PROJECT TYPE> <PROJECT NAME>${ENDCOLOR}"

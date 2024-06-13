@@ -10,6 +10,8 @@ ENDCOLOR="\e[0m"
 
 # Variables
 VERSION="alphaV1.0"
+discord_link="https://github.com/kaneki-hacker/discord-python-blueprint.git"
+
 
 # Functions
 helping ()
@@ -30,6 +32,13 @@ wrong ()
   exit 1
 }
 
+version ()
+{
+  # This function will return the version of the script and 
+  echo "Underwork!!!"
+  exit 0
+}
+
 new ()
 {
   # This function will handle creating new projects then connecting my current project status to the discord servers.
@@ -48,23 +57,46 @@ new ()
   local directory_name=$2
   echo -e "${BLUE}Project is creating...${ENDCOLOR}"
   if [[ "$pr_name" == "python" ]]; then
+    # TODO: add the cheking mekanisme for all the dependencies of the project before starting
     echo -e "${MAGENTA}The project type choosed is python!!${ENDCOLOR}"
     echo -e "${RED}Are you sure you want to create this project?(y/n)${ENDCOLOR}"
     read choice
     if [[ "$choice" == "y" ]]; then
-      echo "mhm"
+      echo -e "${RED}Creating resumed!${ENDCOLOR}"
+      mkdir $directory_name
+      cd $directory_name
+      eval "python3.12 -m venv venv"
+      sleep 2
+      echo -e "${GREEN}Finished project creating!!${ENDCOLOR}"
+      echo -e "${MAGENTA}Change your directory to the newly created directory and start creating!"
+      exit 0
     elif [[ "$choice" == "n" ]]; then
-      echo "nope"
+      echo -e "${RED}Mission aborting!!${ENDCOLOR}"
+      exit 0
     else
-      echo "ronggg"
+      echo -e "${RED}You choose a wrong option! exiting${ENDCOLOR}"
       exit 1
     fi
   elif [[ "$pr_name" == "discord" ]]; then
-    echo "SHITOOOO"
+    echo -e "${MAGENTA}Creating a discord project!${ENDCOLOR}"
+    echo -e "${RED}Are you sure you want to create this project?(y/n)${ENDCOLOR}"
+    read choice
+    if [[ "$choice" == "y" ]]; then
+      echo "chosed y"
+    elif [[ "$choice" == "n"]]; then
+      echo "chosed n"
+    else
+      echo "nope"
+      exit 1
+    fi
   fi
 
 }
 
+# TODO: Create a backup function
+# TODO: Create a function to clone all the necessary repositories from github
+# TODO: Create a function that checks for the "/usr/local/share/" if my app files are there, if not clone them and then store them localy
+# TODO: Add more functionality to my script
 
 # Main file entry
 

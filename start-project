@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+ # NOTICE: This script is made for linux, and probably will run on mac os, but windows is not supported
+
 # Colors
 RED="\e[31m"
 GREEN="\e[32m"
@@ -11,6 +13,11 @@ ENDCOLOR="\e[0m"
 # Variables
 VERSION="alphaV1.0"
 discord_link="https://github.com/kaneki-hacker/discord-python-blueprint.git"
+#
+# Project files folder
+#
+files_directory="/usr/local/share/$@"
+files_repository=""
 
 
 # Functions
@@ -80,7 +87,7 @@ new ()
       echo -e "${MAGENTA}Change your directory to the newly created directory and start creating!"
       exit 0
     elif [[ "$choice" == "n" ]]; then
-      echo -e "${RED}Mission aborting!!${ENDCOLOR}"
+      echo -e "${RED}Aborting project creating!${ENDCOLOR}"
       exit 0
     else
       echo -e "${RED}You choose a wrong option! exiting${ENDCOLOR}"
@@ -91,25 +98,39 @@ new ()
     echo -e "${RED}Are you sure you want to create this project?(y/n)${ENDCOLOR}"
     read choice
     if [[ "$choice" == "y" ]]; then
-      echo "chosed y"
+      echo -e "${GREEN}Project creating resumed...${ENDCOLOR}"
+      mkdir $directory_name
+      cd $directory_name
+      git clone $discord_link
+      echo -e "${GREEN}Project creating is complete!${ENDCOLOR}"
+      exit 0
     elif [[ "$choice" == "n" ]]; then
-      echo "chosed n"
+      echo -e "${RED}Aborting project creating!${ENDCOLOR}"
+      exit °0
     else
-      echo "nope"
+      echo -e "${RED}You choosed a wrong option! Exiting!${ENDCOLOR}"
       exit 1
     fi
   fi
 
 }
 
+# TODO: Make an install script function!!
+
+# TODO: make a function to automate github clonning!
+
 # TODO: Create a backup function
 # TODO: Create a function to clone all the necessary repositories from github
 # TODO: Create a function that checks for the "/usr/local/share/" if my app files are there, if not clone them and then store them localy
 # TODO: Add more functionality to my script
 
+
 # Main file entry
 
 case "$1" in
+  install | i)
+    echo -e "${MAGENTA}NOT HERE YET AGAIN, But still under work!"
+    ;;
   new)
     new "$2" "$3"
     ;;

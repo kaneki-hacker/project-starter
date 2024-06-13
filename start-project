@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
- # NOTICE: This script is made for linux, and probably will run on mac os, but windows is not supported
+# NOTICE: This script is made for linux, and probably will run on mac os, but windows is not supported
+
+# NOTICE: The development for this script has stopped because the file is hard to maintain and the code is not safe
+
 
 # Colors
 RED="\e[31m"
